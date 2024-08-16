@@ -1,10 +1,10 @@
-package com.solomon.course;
+package com.solomon.solomon;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CourseApplicationTests {
+class SolomonApplicationTests {
 
 	@Test
 	void contextLoads() {

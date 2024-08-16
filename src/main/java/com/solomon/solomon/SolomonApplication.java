@@ -1,13 +1,13 @@
-package com.solomon.course;
+package com.solomon.solomon;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CourseApplication {
+public class SolomonApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CourseApplication.class, args);
+		SpringApplication.run(SolomonApplication.class, args);
 	}
 
 }
