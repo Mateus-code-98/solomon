@@ -6,12 +6,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Service;
 
 import com.solomon.solomon.modules.users.dtos.AuthenticateUserOutputDTO;
-import com.solomon.solomon.modules.users.exceptions.CredentialsException;
 import com.solomon.solomon.modules.users.model.User;
 import com.solomon.solomon.modules.users.repository.UserRepository;
-import com.solomon.solomon.shared.exceptions.AppExpection;
-import com.solomon.solomon.shared.exceptions.ResourceNotFoundException;
-import com.solomon.solomon.shared.helpers.PasswordHelper;
+import com.solomon.solomon.shared.infra.security.TokenService;
 
 @Service
 public class AuthServices {
@@ -22,25 +19,22 @@ public class AuthServices {
     private UserRepository userRepository;
 
     @Autowired
-    private PasswordHelper passwordHelper;
+    private TokenService tokenService;
 
     public AuthenticateUserOutputDTO session(String email, String password) {
-        User user = userRepository.findByEmail(email);
-        if (user == null)
-            throw new CredentialsException();
 
         var usernamePassword = new UsernamePasswordAuthenticationToken(email,
                 password);
 
-        System.out.println("\n\n\n\nusernamePassword-" + usernamePassword + "\n\n\n\n");
+        var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        // var auth = this.authenticationManager.authenticate(usernamePassword);
+        var token = tokenService.generateToken((User) auth.getPrincipal());
 
-        // System.out.println("\n\n\n\nauth-" + auth + "\n\n\n\n");
+        User user = userRepository.findByEmail(email);
 
         AuthenticateUserOutputDTO authenticateUserOutput = new AuthenticateUserOutputDTO(
                 user.getId(),
-                "token",
+                token,
                 user.getEmail(),
                 user.getRole(),
                 user.getName());

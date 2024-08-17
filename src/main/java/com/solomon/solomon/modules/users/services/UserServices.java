@@ -1,33 +1,34 @@
 package com.solomon.solomon.modules.users.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.solomon.solomon.modules.users.dtos.CreateUserDTO;
 import com.solomon.solomon.modules.users.model.User;
 import com.solomon.solomon.modules.users.repository.UserRepository;
-import com.solomon.solomon.shared.helpers.PasswordHelper;
+import com.solomon.solomon.shared.exceptions.ConflitException;
 
 @Service
 public class UserServices {
     @Autowired
     private UserRepository repository;
 
-    @Autowired
-    private PasswordHelper passwordHelper;
-
     public User create(CreateUserDTO createUserDTO) {
+        User existentUser = repository.findByEmail(createUserDTO.email());
+        if (existentUser != null)
+            throw new ConflitException("Email");
+
+        String encryptedPassword = new BCryptPasswordEncoder().encode(createUserDTO.password());
 
         createUserDTO = new CreateUserDTO(
                 createUserDTO.name(),
                 createUserDTO.email(),
                 createUserDTO.phone(),
-                passwordHelper.hashPassword(createUserDTO.password()),
+                encryptedPassword,
                 createUserDTO.role());
 
         User user = new User(createUserDTO);
-
-        System.out.println("\n\n\n\nuser-" + user + "\n\n\n\n");
 
         repository.save(user);
 
