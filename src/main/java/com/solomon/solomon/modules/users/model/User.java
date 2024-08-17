@@ -6,6 +6,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -55,6 +57,10 @@ public class User implements UserDetails {
     @UpdateTimestamp
     private LocalDateTime updated_at;
 
+    @OneToOne
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
+    private Address address;
+
     public User(String name, String email, String phone, String password, UserRole role) {
         this.name = name.toUpperCase().trim();
         this.email = email.toLowerCase().trim();
@@ -69,6 +75,21 @@ public class User implements UserDetails {
         this.phone = CreateUserInputDTO.phone().trim();
         this.password = CreateUserInputDTO.password();
         this.role = CreateUserInputDTO.role();
+    }
+
+    public Void setEmail(String email) {
+        this.email = email.trim().toLowerCase();
+        return null;
+    }
+
+    public Void setName(String name) {
+        this.name = name.trim().toUpperCase();
+        return null;
+    }
+
+    public Void setPhone(String phone) {
+        this.phone = phone.trim();
+        return null;
     }
 
     @Override
@@ -105,6 +126,7 @@ public class User implements UserDetails {
     }
 
     public UserOutputDTO outputUser() {
-        return new UserOutputDTO(this.id, this.name, this.email, this.phone, this.role);
+        return new UserOutputDTO(this.id, this.name, this.email, this.phone, this.role, this.address.toOutputDTO(),
+                this.created_at, this.updated_at);
     }
 }

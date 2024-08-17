@@ -10,7 +10,6 @@ import com.solomon.solomon.shared.dtos.ListInputDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
 
 @Repository
 public class CustomUserRepository {
@@ -33,6 +32,8 @@ public class CustomUserRepository {
                         UNACCENT(name) ILIKE '%' || UNACCENT(:search) || '%'
                         OR UNACCENT(email) ILIKE '%' || UNACCENT(:search) || '%'
                         OR UNACCENT(phone) ILIKE '%' || UNACCENT(:search) || '%'
+                    ORDER BY
+                        u.created_at DESC
                     LIMIT
                         :limit
                     OFFSET
