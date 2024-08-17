@@ -10,6 +10,7 @@ import com.solomon.solomon.modules.users.services.AuthServices;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +25,7 @@ public class AuthController {
     public ResponseEntity<AuthenticateUserOutputDTO> session(@RequestBody() @Valid AuthenticateUserInputDTO body) {
         AuthenticateUserOutputDTO authenticateUserOutput = service.session(body.email(), body.password());
 
-        return ResponseEntity.status(200).body(authenticateUserOutput);
+        return ResponseEntity.status(HttpStatus.OK).body(authenticateUserOutput);
     }
 
 }

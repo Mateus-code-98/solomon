@@ -7,7 +7,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,7 +23,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.solomon.solomon.modules.users.dtos.CreateUserDTO;
+import com.solomon.solomon.modules.users.dtos.CreateUserInputDTO;
+import com.solomon.solomon.modules.users.dtos.UserOutputDTO;
 
 @Table(name = "users")
 @Entity(name = "users")
@@ -56,19 +56,19 @@ public class User implements UserDetails {
     private LocalDateTime updated_at;
 
     public User(String name, String email, String phone, String password, UserRole role) {
-        this.name = name;
-        this.email = email;
-        this.phone = phone;
+        this.name = name.toUpperCase().trim();
+        this.email = email.toLowerCase().trim();
+        this.phone = phone.trim();
         this.password = password;
         this.role = role;
     }
 
-    public User(CreateUserDTO createUserDTO) {
-        this.name = createUserDTO.name();
-        this.email = createUserDTO.email();
-        this.phone = createUserDTO.phone();
-        this.password = createUserDTO.password();
-        this.role = createUserDTO.role();
+    public User(CreateUserInputDTO CreateUserInputDTO) {
+        this.name = CreateUserInputDTO.name().toUpperCase().trim();
+        this.email = CreateUserInputDTO.email().toLowerCase().trim();
+        this.phone = CreateUserInputDTO.phone().trim();
+        this.password = CreateUserInputDTO.password();
+        this.role = CreateUserInputDTO.role();
     }
 
     @Override
@@ -102,5 +102,9 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public UserOutputDTO outputUser() {
+        return new UserOutputDTO(this.id, this.name, this.email, this.phone, this.role);
     }
 }
